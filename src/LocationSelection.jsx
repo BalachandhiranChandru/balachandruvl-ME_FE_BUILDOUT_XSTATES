@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-// const API_ENDPOINT = 'https://crio-location-selector.onrender.com';
-const API_ENDPOINT = 'https://location_selector.labs.crio.do';
+const API_ENDPOINT = 'https://crio-location-selector.onrender.com';
 
 
 function LocationSelection() {
