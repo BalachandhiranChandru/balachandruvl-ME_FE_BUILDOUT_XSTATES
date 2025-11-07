@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 // Use the public test host when running under Cypress (window.Cypress is injected by Cypress)
-// const PROD_API = 'https://crio-location-selector.onrender.com';
-// const TEST_API = 'https://location_selector.labs.crio.do';
-// const API_ENDPOINT = typeof window !== 'undefined' && window.Cypress ? TEST_API : PROD_API;
+const PROD_API = 'https://crio-location-selector.onrender.com';
+const TEST_API = 'https://location_selector.labs.crio.do';
+const API_ENDPOINT = typeof window !== 'undefined' && window.Cypress ? TEST_API : PROD_API;
 // const API_ENDPOINT = 'https://location_selector.labs.crio.do';
-const API_ENDPOINT = 'https://crio-location-selector.onrender.com';
+// const API_ENDPOINT = 'https://crio-location-selector.onrender.com';
 
 function normalizeList(arr) {
     if (!Array.isArray(arr)) return [];
@@ -1236,6 +1236,7 @@ export default LocationSelection;
 //     );
 // }
 // export default LocationSelection;
+
 
 
 
