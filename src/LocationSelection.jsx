@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-const API_ENDPOINT = 'https://location_selector.labs.crio.do';
+// const API_ENDPOINT = 'https://location_selector.labs.crio.do';
+const API_ENDPOINT = 'http://location_selector.labs.crio.do';
 
 function LocationSelection() {
 
@@ -874,6 +875,7 @@ export default LocationSelection;
 //     );
 // }
 // export default LocationSelection;
+
 
 
 
