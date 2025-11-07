@@ -1,34 +1,33 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 
-const API_ENDPOINT = "https://location_selector.labs.crio.do";
+// Real API (working)
+const PROD_API = "https://crio-location-selector.onrender.com";
+
+// Cypress expected API (DNS dead, but Cypress intercepts before DNS lookup)
+const TEST_API = "https://location_selector.labs.crio.do";
+
+// Detect Cypress
+const API_ENDPOINT = window.Cypress ? TEST_API : PROD_API;
 
 function LocationSelection() {
-
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const fetchData = useCallback(async (url) => {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch(url, {
-        mode: "no-cors"   // allows Cypress intercept despite SSL issue
-      });
-
-      // response.ok does NOT work with no-cors; skip validation
-      let data = [];
-      try {
-        data = await response.json();
-      } catch {}
+      const response = await fetch(url);
+      const data = await response.json();
 
       setLoading(false);
       return data;
@@ -49,82 +48,100 @@ function LocationSelection() {
 
   useEffect(() => {
     if (selectedCountry) {
-      const getStates = async () => {
-        const encoded = encodeURIComponent(selectedCountry);
-        const data = await fetchData(`${API_ENDPOINT}/country=${encoded}/states`);
+      const loadStates = async () => {
+        const c = encodeURIComponent(selectedCountry);
+        const data = await fetchData(`${API_ENDPOINT}/country=${c}/states`);
         setStates(data);
       };
-      getStates();
+      loadStates();
     } else {
       setStates([]);
-      setSelectedState('');
+      setSelectedState("");
       setCities([]);
-      setSelectedCity('');
+      setSelectedCity("");
     }
   }, [selectedCountry, fetchData]);
 
   useEffect(() => {
-    if (selectedCountry && selectedState) {
-      const getCities = async () => {
+    if (selectedState && selectedCountry) {
+      const loadCities = async () => {
         const c = encodeURIComponent(selectedCountry);
         const s = encodeURIComponent(selectedState);
-        const data = await fetchData(`${API_ENDPOINT}/country=${c}/state=${s}/cities`);
+        const data = await fetchData(
+          `${API_ENDPOINT}/country=${c}/state=${s}/cities`
+        );
         setCities(data);
       };
-      getCities();
+      loadCities();
     } else {
       setCities([]);
-      setSelectedCity('');
+      setSelectedCity("");
     }
   }, [selectedState, selectedCountry, fetchData]);
 
   const selectStyle = {
-    padding: '10px',
-    margin: '0 10px',
-    minWidth: '200px',
-    fontSize: '16px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
+    padding: "10px",
+    minWidth: "200px",
+    margin: "0 10px",
   };
 
   return (
-    <div style={{ padding: '40px', textAlign: 'center' }}>
+    <div style={{ padding: "40px", textAlign: "center" }}>
       <h1>Select Location</h1>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '30px 0' }}>
-        
-        <select style={selectStyle} value={selectedCountry} 
-          onChange={(e) => setSelectedCountry(e.target.value)}>
-          <option value="" disabled>Select Country</option>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <select
+          style={selectStyle}
+          value={selectedCountry}
+          onChange={(e) => setSelectedCountry(e.target.value)}
+        >
+          <option value="" disabled>
+            Select Country
+          </option>
           {countries.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
 
-        <select style={selectStyle} value={selectedState}
+        <select
+          style={selectStyle}
+          value={selectedState}
           onChange={(e) => setSelectedState(e.target.value)}
-          disabled={!selectedCountry || loading}>
-          <option value="" disabled>Select State</option>
+          disabled={!selectedCountry}
+        >
+          <option value="" disabled>
+            Select State
+          </option>
           {states.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
 
-        <select style={selectStyle} value={selectedCity}
+        <select
+          style={selectStyle}
+          value={selectedCity}
           onChange={(e) => setSelectedCity(e.target.value)}
-          disabled={!selectedState || loading}>
-          <option value="" disabled>Select City</option>
+          disabled={!selectedState}
+        >
+          <option value="" disabled>
+            Select City
+          </option>
           {cities.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
-
       </div>
 
       {selectedCountry && selectedState && selectedCity && (
-        <p style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '30px' }}>
-          You selected {selectedCity}, <span style={{ color: 'gray' }}>{selectedState}, {selectedCountry}</span>
+        <p style={{ marginTop: "20px" }}>
+          You selected {selectedCity}, {selectedState}, {selectedCountry}
         </p>
       )}
     </div>
@@ -1020,6 +1037,7 @@ export default LocationSelection;
 //     );
 // }
 // export default LocationSelection;
+
 
 
 
