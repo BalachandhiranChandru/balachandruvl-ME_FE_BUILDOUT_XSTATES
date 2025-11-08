@@ -44,6 +44,11 @@ function LocationSelection() {
     }, [fetchData]);
     
     useEffect(() => {
+        setStates([]);
+        setSelectedState('');
+        setCities([]);
+        setSelectedCity('');
+        
         if (selectedCountry) {
             const getStates = async () => {
                 const countryNameEncoded = encodeURIComponent(selectedCountry);
@@ -52,14 +57,14 @@ function LocationSelection() {
                 setStates(data);
             };
             getStates();
-        } else {
-            setStates([]);
-        }
-        setSelectedState('');
-        setSelectedCity('');
+        } 
+        
     }, [selectedCountry, fetchData]);
     
     useEffect(() => {
+        setCities([]);
+        setSelectedCity('');
+        
         if (selectedCountry && selectedState) {
             const getCities = async () => {
                 const stateNameEncoded = encodeURIComponent(selectedState);
@@ -68,10 +73,8 @@ function LocationSelection() {
                 setCities(data);
             };
             getCities();
-        } else {
-            setCities([]);
-        }
-        setSelectedCity('');
+        } 
+        
     }, [selectedState, selectedCountry, fetchData]);
     
     const handleCountryChange = (event) => {
