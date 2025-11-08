@@ -58,9 +58,9 @@ function LocationSelection() {
         if (selectedCountry) {
             const getStates = async () => {
                 const countryNameEncoded = encodeURIComponent(selectedCountry);
-                const url = `${API_ENDPOINT}/country=${countryNameEncoded}/states`;
+                // const url = `${API_ENDPOINT}/country=${countryNameEncoded}/states`;
                 // const url = `https://location_selector.labs.crio.do/country=${countryNameEncoded}/states`;
-                // const url = `${API_ENDPOINT}/states?country=${countryNameEncoded}`;
+                const url = `${API_ENDPOINT}/states?country=${countryNameEncoded}`;
                 const data = await fetchData(url);
                 setStates(data);
             };
@@ -74,11 +74,11 @@ function LocationSelection() {
     useEffect(() => {
         if (selectedCountry && selectedState) {
             const getCities = async () => {
-                const countryNameEncoded = encodeURIComponent(selectedCountry);
+                // const countryNameEncoded = encodeURIComponent(selectedCountry);
                 const stateNameEncoded = encodeURIComponent(selectedState);
-                const url = `${API_ENDPOINT}/country=${countryNameEncoded}/state=${stateNameEncoded}/cities`;
+                // const url = `${API_ENDPOINT}/country=${countryNameEncoded}/state=${stateNameEncoded}/cities`;
                 // const url = `https://location_selector.labs.crio.do/country=${countryNameEncoded}/state=${stateNameEncoded}/cities`;
-                // const url = `${API_ENDPOINT}/cities?state=${stateNameEncoded}`;
+                const url = `${API_ENDPOINT}/cities?state=${stateNameEncoded}`;
                 const data = await fetchData(url);
                 setCities(data);
             };
