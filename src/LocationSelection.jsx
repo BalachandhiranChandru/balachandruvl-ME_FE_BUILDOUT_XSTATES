@@ -3,19 +3,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 const API_ENDPOINT = 'https://location-selector.labs.crio.do';
 // const API_ENDPOINT = 'https://crio-location-selector.onrender.com';
 
-// CHANGE ONLY THIS PART :
-// WRONG
-// const url = `${API_ENDPOINT}/country=${countryNameEncoded}/states`;
-
-// // FIX
-// const url = `${API_ENDPOINT}/states?country=${countryNameEncoded}`;
-
-// //  WRONG
-// const url = `${API_ENDPOINT}/country=${countryNameEncoded}/state=${stateNameEncoded}/cities`;
-
-// //  FIX
-// const url = `${API_ENDPOINT}/cities?state=${stateNameEncoded}`;
-
 function LocationSelection() {
 
     const [countries, setCountries] = useState([]);
@@ -47,6 +34,7 @@ function LocationSelection() {
             return [];
         }
     }, []);
+    
     useEffect(() => {
         const getCountries = async () => {
             const data = await fetchData(`${API_ENDPOINT}/countries`);
@@ -54,12 +42,11 @@ function LocationSelection() {
         };
         getCountries();
     }, [fetchData]);
+    
     useEffect(() => {
         if (selectedCountry) {
             const getStates = async () => {
                 const countryNameEncoded = encodeURIComponent(selectedCountry);
-                // const url = `${API_ENDPOINT}/country=${countryNameEncoded}/states`;
-                // const url = `https://location_selector.labs.crio.do/country=${countryNameEncoded}/states`;
                 const url = `${API_ENDPOINT}/states?country=${countryNameEncoded}`;
                 const data = await fetchData(url);
                 setStates(data);
@@ -71,13 +58,11 @@ function LocationSelection() {
         setSelectedState('');
         setSelectedCity('');
     }, [selectedCountry, fetchData]);
+    
     useEffect(() => {
         if (selectedCountry && selectedState) {
             const getCities = async () => {
-                // const countryNameEncoded = encodeURIComponent(selectedCountry);
                 const stateNameEncoded = encodeURIComponent(selectedState);
-                // const url = `${API_ENDPOINT}/country=${countryNameEncoded}/state=${stateNameEncoded}/cities`;
-                // const url = `https://location_selector.labs.crio.do/country=${countryNameEncoded}/state=${stateNameEncoded}/cities`;
                 const url = `${API_ENDPOINT}/cities?state=${stateNameEncoded}`;
                 const data = await fetchData(url);
                 setCities(data);
@@ -88,6 +73,7 @@ function LocationSelection() {
         }
         setSelectedCity('');
     }, [selectedState, selectedCountry, fetchData]);
+    
     const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
     };
@@ -99,6 +85,7 @@ function LocationSelection() {
     const handleCityChange = (event) => {
         setSelectedCity(event.target.value);
     };
+    
     const selectStyle = {
         padding: '10px',
         margin: '0 10px',
@@ -107,6 +94,7 @@ function LocationSelection() {
         borderRadius: '4px',
         border: '1px solid #ccc',
     };
+    
     return (
         <div style={{ padding: '40px', textAlign: 'center' }}>
             <h1>Select Location</h1>
@@ -116,7 +104,7 @@ function LocationSelection() {
                     style={selectStyle}
                     value={selectedCountry}
                     onChange={handleCountryChange}
-                    disabled={countries.length === 0}
+                    disabled={countries.length === 0 && !error && loading}
                 >
                     <option value="" disabled>Select Country</option>
                     {countries.map((country) => (
@@ -133,7 +121,7 @@ function LocationSelection() {
                     style={selectStyle}
                     value={selectedState}
                     onChange={handleStateChange}
-                    disabled={!selectedCountry || states.length === 0 || loading}
+                    disabled={!selectedCountry || loading}
                 >
                     <option value="" disabled>Select State</option>
                     {states.map((state) => (
@@ -150,7 +138,7 @@ function LocationSelection() {
                     style={selectStyle}
                     value={selectedCity}
                     onChange={handleCityChange}
-                    disabled={!selectedState || cities.length === 0 || loading}
+                    disabled={!selectedState || loading}
                 >
                     <option value="" disabled>Select City</option>
                     {cities.map((city) => (
@@ -163,25 +151,6 @@ function LocationSelection() {
                         </option>
                     ))}
                 </select>
-
-
-
-                {/* <select style={selectStyle}>
-                    <option value="" disabled>Select Country</option>
-                    <option value="USA" country_name="USA">USA</option>
-                    <option value="Canada" country_name="Canada">Canada</option>
-                    <option value="India" country_name="India">India</option>
-                </select>
-                <select style={selectStyle}>
-                    <option value="" disabled>Select State</option>
-                    <option value="California" state_name="California">California</option>
-                    <option value="Texas" state_name="Texas">Texas</option>
-                </select>
-                <select style={selectStyle}>
-                    <option value="" disabled>Select City</option>
-                    <option value="Los Angeles" city_name="Los Angeles">Los Angeles</option>
-                    <option value="San Francisco" city_name="San Francisco">San Francisco</option>
-                </select> */}
             </div>
             {selectedCountry && selectedState && selectedCity && (
                 <p style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '30px' }}>
